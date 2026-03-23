@@ -1,30 +1,74 @@
+import { useRef, useEffect } from 'react'
+
 export default function SearchBar({ value, onChange }) {
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    function handleKey(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        inputRef.current?.focus()
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [])
+
   return (
-    <header className="fixed top-0 left-52 right-0 h-16 bg-[#121212]/90 backdrop-blur-md z-20 flex items-center px-6 gap-4 border-b border-white/5">
-      <div className="relative w-full max-w-md">
+    <header
+      className="fixed top-0 right-0 z-20 flex items-center px-8 gap-4"
+      style={{
+        left: 'var(--sidebar-w)',
+        height: 'var(--header-h)',
+        background: 'rgba(6, 6, 10, 0.75)',
+        backdropFilter: 'blur(24px) saturate(1.2)',
+        borderBottom: '1px solid var(--border)',
+      }}
+    >
+      {/* Search field */}
+      <div className="relative w-full max-w-sm group">
         <svg
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[15px] h-[15px] pointer-events-none transition-colors duration-200"
+          style={{ color: value ? 'var(--accent)' : 'var(--text-muted)' }}
           viewBox="0 0 24 24"
-          fill="currentColor"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
         >
-          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+          <circle cx="11" cy="11" r="8" />
+          <path strokeLinecap="round" d="m21 21-4.35-4.35" />
         </svg>
         <input
+          ref={inputRef}
           type="search"
-          placeholder="搜尋專輯、藝人..."
+          placeholder="搜尋專輯、藝人或風格…"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full bg-white/10 text-white placeholder-white/40 text-sm rounded-full pl-10 pr-4 py-2 outline-none focus:bg-white/15 transition-colors"
+          className="w-full text-[13px] rounded-xl pl-10 pr-10 py-2.5 outline-none transition-all duration-200 placeholder:text-[var(--text-muted)] focus:ring-1"
+          style={{
+            background: 'var(--bg-elevated)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border)',
+            fontFamily: 'var(--font-body)',
+          }}
         />
-        {value && (
+        {value ? (
           <button
             onClick={() => onChange('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors duration-200 hover:opacity-80"
+            style={{ color: 'var(--text-secondary)' }}
           >
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
+              <path strokeLinecap="round" d="M18 6 6 18M6 6l12 12" />
             </svg>
           </button>
+        ) : (
+          <kbd
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] px-1.5 py-0.5 rounded font-medium"
+            style={{ color: 'var(--text-muted)', background: 'var(--bg-hover)', border: '1px solid var(--border)' }}
+          >
+            ⌘K
+          </kbd>
         )}
       </div>
     </header>

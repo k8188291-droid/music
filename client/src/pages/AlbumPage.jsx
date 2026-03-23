@@ -24,7 +24,7 @@ export default function AlbumPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center" style={{ minHeight: '70vh' }}>
         <Spinner size={48} />
       </div>
     )
@@ -32,9 +32,13 @@ export default function AlbumPage() {
 
   if (isError || !album) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <p className="text-white/50">找不到該專輯</p>
-        <button onClick={() => navigate(-1)} className="text-white underline text-sm">
+      <div className="flex flex-col items-center justify-center gap-4 animate-fade-in" style={{ minHeight: '70vh' }}>
+        <p style={{ color: 'var(--text-secondary)' }}>找不到該專輯</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="text-sm underline underline-offset-4 transition-colors"
+          style={{ color: 'var(--accent)' }}
+        >
           返回
         </button>
       </div>
@@ -62,54 +66,101 @@ export default function AlbumPage() {
   }
 
   return (
-    <div className="min-h-screen pb-32">
-      {/* Header with gradient */}
-      <div
-        className="relative px-6 pt-16 pb-6"
-        style={{
-          background: `linear-gradient(to bottom, ${album.color}cc 0%, ${album.color}44 60%, transparent 100%)`,
-        }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          className="absolute top-4 left-4 text-white/70 hover:text-white flex items-center gap-1 text-sm transition-colors"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
-          </svg>
-          返回
-        </button>
+    <div className="pb-12 animate-fade-in">
+      {/* Hero header */}
+      <div className="relative overflow-hidden">
+        {/* Background blur from cover */}
+        <div
+          className="absolute inset-0 scale-110 blur-3xl opacity-30"
+          style={{
+            backgroundImage: `url(${album.coverImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to bottom, rgba(6,6,10,0.4), var(--bg-base))' }}
+        />
 
-        <div className="flex gap-6 items-end">
-          <img
-            src={album.coverImage}
-            alt={album.title}
-            className="w-48 h-48 object-cover rounded shadow-2xl flex-shrink-0"
-          />
-          <div>
-            <p className="text-white/70 text-xs uppercase tracking-widest mb-1">專輯</p>
-            <h1 className="text-white font-bold text-4xl mb-3">{album.title}</h1>
-            <p className="text-white/80 text-sm">
-              <span className="font-semibold">{album.artist}</span>
-              <span className="text-white/50"> • {album.year} • {album.tracks.length} 首歌曲</span>
-              <span className="text-white/50"> • {totalDuration(album.tracks)}</span>
-            </p>
+        <div className="relative px-8 pt-12 pb-8">
+          {/* Back button */}
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1.5 text-[13px] mb-8 transition-colors duration-200 group"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            返回
+          </button>
+
+          <div className="flex gap-8 items-end">
+            {/* Album cover */}
+            <div className="relative flex-shrink-0 animate-scale-in">
+              <img
+                src={album.coverImage}
+                alt={album.title}
+                className="w-56 h-56 object-cover rounded-lg"
+                style={{ boxShadow: '0 24px 64px rgba(0,0,0,0.5)' }}
+              />
+              {/* Vinyl disc peeking */}
+              <div
+                className="absolute top-4 -right-6 w-48 h-48 rounded-full -z-10"
+                style={{
+                  background: 'conic-gradient(from 0deg, #111, #1a1a1a, #111, #151515, #111)',
+                  boxShadow: 'inset 0 0 0 20px #0a0a0a, inset 0 0 0 22px #1a1a1a, inset 0 0 0 40px #0d0d0d',
+                }}
+              >
+                <div
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full"
+                  style={{ background: 'var(--accent)' }}
+                />
+              </div>
+            </div>
+
+            {/* Album info */}
+            <div className="animate-fade-in-up" style={{ animationDelay: '150ms' }}>
+              <p
+                className="text-[10px] uppercase tracking-[0.25em] font-semibold mb-2"
+                style={{ color: 'var(--accent)' }}
+              >
+                專輯
+              </p>
+              <h1
+                className="text-5xl font-bold leading-tight mb-4"
+                style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}
+              >
+                {album.title}
+              </h1>
+              <div className="flex items-center gap-2 text-[13px] flex-wrap">
+                <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{album.artist}</span>
+                <span style={{ color: 'var(--text-muted)' }}>•</span>
+                <span style={{ color: 'var(--text-secondary)' }}>{album.year}</span>
+                <span style={{ color: 'var(--text-muted)' }}>•</span>
+                <span style={{ color: 'var(--text-secondary)' }}>{album.tracks.length} 首歌曲</span>
+                <span style={{ color: 'var(--text-muted)' }}>•</span>
+                <span style={{ color: 'var(--text-secondary)' }}>{totalDuration(album.tracks)}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Controls */}
-      <div className="px-6 py-4 flex items-center gap-4">
+      {/* Action bar */}
+      <div className="px-8 py-5 flex items-center gap-5 animate-fade-in" style={{ animationDelay: '200ms' }}>
         <button
           onClick={handlePlayAll}
-          className="w-14 h-14 bg-green-500 rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-lg"
+          className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 hover:brightness-110"
+          style={{ background: 'var(--accent)', color: '#000', boxShadow: '0 8px 24px var(--accent-glow)' }}
         >
           {isThisAlbumPlaying ? (
-            <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
             </svg>
           ) : (
-            <svg className="w-6 h-6 text-black ml-1" fill="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z" />
             </svg>
           )}
@@ -117,18 +168,22 @@ export default function AlbumPage() {
       </div>
 
       {/* Track list header */}
-      <div className="px-6 mb-2 grid grid-cols-[2rem_1fr_4rem] gap-4 text-white/50 text-xs uppercase tracking-widest border-b border-white/10 pb-2">
+      <div
+        className="mx-8 mb-1 grid grid-cols-[2.5rem_1fr_3.5rem] gap-4 text-[10px] uppercase tracking-[0.15em] font-semibold pb-3"
+        style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}
+      >
         <span className="text-center">#</span>
         <span>標題</span>
         <span className="text-right">
-          <svg className="w-4 h-4 inline" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" />
+          <svg className="w-3.5 h-3.5 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
           </svg>
         </span>
       </div>
 
       {/* Tracks */}
-      <div className="px-2">
+      <div className="mx-4">
         {album.tracks.map((track, i) => (
           <TrackItem
             key={track.id}

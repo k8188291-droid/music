@@ -25,9 +25,17 @@ export default function TrackItem({ track, index, queue, album }) {
   return (
     <div
       onClick={handlePlay}
-      className={`group flex items-center gap-4 px-4 py-2 rounded-md cursor-pointer transition-colors ${
-        isCurrent ? 'bg-white/10' : 'hover:bg-white/10'
-      }`}
+      className="group flex items-center gap-4 px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-200"
+      style={{
+        background: isCurrent ? 'var(--bg-hover)' : 'transparent',
+        animationDelay: `${index * 30}ms`,
+      }}
+      onMouseEnter={(e) => {
+        if (!isCurrent) e.currentTarget.style.background = 'var(--bg-hover)'
+      }}
+      onMouseLeave={(e) => {
+        if (!isCurrent) e.currentTarget.style.background = 'transparent'
+      }}
     >
       {/* Number / Play icon */}
       <div className="w-8 text-center flex-shrink-0">
@@ -35,11 +43,15 @@ export default function TrackItem({ track, index, queue, album }) {
           <SoundWave />
         ) : (
           <>
-            <span className={`text-sm group-hover:hidden ${isCurrent ? 'text-green-400' : 'text-white/50'}`}>
+            <span
+              className="text-[13px] tabular-nums group-hover:hidden"
+              style={{ color: isCurrent ? 'var(--accent)' : 'var(--text-muted)' }}
+            >
               {track.trackNumber}
             </span>
             <svg
-              className="w-4 h-4 text-white hidden group-hover:block mx-auto"
+              className="w-4 h-4 hidden group-hover:block mx-auto"
+              style={{ color: 'var(--text-primary)' }}
               fill="currentColor"
               viewBox="0 0 24 24"
             >
@@ -55,13 +67,21 @@ export default function TrackItem({ track, index, queue, album }) {
 
       {/* Title */}
       <div className="flex-1 min-w-0">
-        <p className={`text-sm truncate ${isCurrent ? 'text-green-400' : 'text-white'}`}>
+        <p
+          className="text-[13px] truncate font-medium"
+          style={{ color: isCurrent ? 'var(--accent)' : 'var(--text-primary)' }}
+        >
           {track.title}
         </p>
       </div>
 
       {/* Duration */}
-      <span className="text-white/50 text-sm flex-shrink-0">{formatDuration(track.duration)}</span>
+      <span
+        className="text-[12px] tabular-nums flex-shrink-0"
+        style={{ color: 'var(--text-muted)' }}
+      >
+        {formatDuration(track.duration)}
+      </span>
     </div>
   )
 }
@@ -69,11 +89,14 @@ export default function TrackItem({ track, index, queue, album }) {
 function SoundWave() {
   return (
     <div className="flex items-end justify-center gap-[2px] h-4">
-      {[1, 2, 3].map((i) => (
+      {[1, 2, 3, 4].map((i) => (
         <span
           key={i}
-          className="w-[3px] bg-green-400 rounded-sm animate-bounce"
-          style={{ animationDelay: `${i * 0.15}s`, height: `${50 + i * 20}%` }}
+          className="w-[2.5px] rounded-full sound-bar"
+          style={{
+            background: 'var(--accent)',
+            height: `${40 + i * 15}%`,
+          }}
         />
       ))}
     </div>

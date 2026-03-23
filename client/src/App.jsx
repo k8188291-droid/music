@@ -16,10 +16,16 @@ const queryClient = new QueryClient({
   },
 })
 
-function PlaceholderPage({ title }) {
+function PlaceholderPage({ title, subtitle }) {
   return (
-    <div className="flex items-center justify-center h-96 text-white/30 text-xl">
-      {title}
+    <div className="flex flex-col items-center justify-center h-[60vh] gap-3 animate-fade-in">
+      <h2
+        className="text-3xl font-bold"
+        style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}
+      >
+        {title}
+      </h2>
+      <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{subtitle}</p>
     </div>
   )
 }
@@ -33,14 +39,20 @@ export default function App() {
         <Sidebar />
         <SearchBar value={search} onChange={setSearch} />
 
-        {/* offset: sidebar (ml-52) + header (pt-16) + player (pb-24) */}
-        <main className="ml-52 pt-16 pb-24 min-h-screen bg-[#121212] text-white">
+        <main
+          style={{
+            marginLeft: 'var(--sidebar-w)',
+            paddingTop: 'var(--header-h)',
+            paddingBottom: 'calc(var(--player-h) + 1rem)',
+            minHeight: '100vh',
+          }}
+        >
           <Routes>
             <Route path="/" element={<HomePage search={search} />} />
             <Route path="/album/:id" element={<AlbumPage />} />
-            <Route path="/queue" element={<PlaceholderPage title="當前播放清單" />} />
-            <Route path="/favorites" element={<PlaceholderPage title="我的最愛" />} />
-            <Route path="/recent" element={<PlaceholderPage title="近期播放" />} />
+            <Route path="/queue" element={<PlaceholderPage title="播放清單" subtitle="你的播放佇列將在這裡顯示" />} />
+            <Route path="/favorites" element={<PlaceholderPage title="我的最愛" subtitle="你收藏的專輯將在這裡顯示" />} />
+            <Route path="/recent" element={<PlaceholderPage title="近期播放" subtitle="最近聆聽的紀錄" />} />
           </Routes>
         </main>
 

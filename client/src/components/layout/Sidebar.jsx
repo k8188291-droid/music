@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 
 const NAV_ITEMS = [
   {
@@ -6,17 +6,17 @@ const NAV_ITEMS = [
     end: true,
     label: '首頁',
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-[18px] h-[18px]">
+        <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955a1.126 1.126 0 0 1 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
       </svg>
     ),
   },
   {
     to: '/queue',
-    label: '當前播放清單',
+    label: '播放清單',
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-        <path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h8v-2H3v2zm13 0v-4l-5 4 5 4v-4z" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-[18px] h-[18px]">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
       </svg>
     ),
   },
@@ -24,8 +24,8 @@ const NAV_ITEMS = [
     to: '/favorites',
     label: '我的最愛',
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-[18px] h-[18px]">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
       </svg>
     ),
   },
@@ -33,45 +33,89 @@ const NAV_ITEMS = [
     to: '/recent',
     label: '近期播放',
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-        <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-[18px] h-[18px]">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
       </svg>
     ),
   },
 ]
 
 export default function Sidebar() {
+  const location = useLocation()
+
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-52 bg-black flex flex-col z-30 select-none">
+    <aside
+      className="fixed left-0 top-0 bottom-0 z-30 flex flex-col select-none animate-slide-in-left"
+      style={{ width: 'var(--sidebar-w)', background: 'var(--bg-surface)', borderRight: '1px solid var(--border)' }}
+    >
       {/* Logo */}
-      <div className="px-6 pt-6 pb-4">
-        <span className="text-white font-bold text-lg tracking-tight">MusicBox</span>
+      <div className="px-7 pt-7 pb-8">
+        <div className="flex items-center gap-2.5">
+          {/* Vinyl icon */}
+          <div className="relative w-8 h-8 flex-shrink-0">
+            <div
+              className="w-full h-full rounded-full"
+              style={{
+                background: 'conic-gradient(from 0deg, #1a1a1a, #333, #1a1a1a, #2a2a2a, #1a1a1a)',
+                boxShadow: 'inset 0 0 0 3px #111, inset 0 0 0 5px #222',
+              }}
+            />
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full"
+              style={{ background: 'var(--accent)' }}
+            />
+          </div>
+          <span
+            className="text-lg tracking-tight"
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: 700 }}
+          >
+            MusicBox
+          </span>
+        </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 space-y-0.5">
-        {NAV_ITEMS.map(({ to, end, label, icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
-                isActive
-                  ? 'text-white bg-white/10'
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
-              }`
-            }
-          >
-            {icon}
-            {label}
-          </NavLink>
-        ))}
+      {/* Navigation */}
+      <nav className="flex-1 px-4 space-y-1">
+        <p
+          className="px-3 mb-3 text-[10px] font-semibold uppercase tracking-[0.2em]"
+          style={{ color: 'var(--text-muted)' }}
+        >
+          瀏覽
+        </p>
+        {NAV_ITEMS.map(({ to, end, label, icon }) => {
+          const isActive = end ? location.pathname === to : location.pathname.startsWith(to)
+          return (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className="relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-200 group"
+              style={{
+                color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                background: isActive ? 'var(--bg-hover)' : 'transparent',
+              }}
+            >
+              {/* Active accent bar */}
+              {isActive && (
+                <div
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r-full"
+                  style={{ background: 'var(--accent)' }}
+                />
+              )}
+              <span className="transition-colors duration-200" style={{ color: isActive ? 'var(--accent)' : undefined }}>
+                {icon}
+              </span>
+              {label}
+            </NavLink>
+          )
+        })}
       </nav>
 
-      {/* Bottom section — could expand later */}
-      <div className="px-6 py-4 border-t border-white/10">
-        <p className="text-white/30 text-xs">© 2025 MusicBox</p>
+      {/* Decorative bottom */}
+      <div className="px-7 py-5" style={{ borderTop: '1px solid var(--border)' }}>
+        <p className="text-[10px]" style={{ color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
+          Curated with care
+        </p>
       </div>
     </aside>
   )
