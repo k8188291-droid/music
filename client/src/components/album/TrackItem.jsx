@@ -6,9 +6,10 @@ function formatDuration(seconds) {
   return `${m}:${String(s).padStart(2, '0')}`
 }
 
-export default function TrackItem({ track, index, queue, album }) {
+export default function TrackItem({ track, index, queue, album, maxDuration }) {
   const { playTrack, currentTrack, isPlaying, togglePlay } = usePlayer()
   const isCurrent = currentTrack?.id === track.id
+  const relativeWidth = maxDuration ? `${(track.duration / maxDuration) * 100}%` : '0%'
 
   function handlePlay() {
     if (isCurrent) {
@@ -25,10 +26,11 @@ export default function TrackItem({ track, index, queue, album }) {
   return (
     <div
       onClick={handlePlay}
-      className="group flex items-center gap-4 px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-200"
+      className="group flex items-center gap-4 px-4 py-4 cursor-pointer transition-all duration-200"
       style={{
-        background: isCurrent ? 'var(--bg-hover)' : 'transparent',
-        animationDelay: `${index * 30}ms`,
+        background: isCurrent ? 'rgba(var(--accent-rgb, 212,160,83), 0.04)' : 'transparent',
+        borderLeft: isCurrent ? '2px solid var(--accent)' : '2px solid transparent',
+        borderRadius: isCurrent ? '0 8px 8px 0' : '8px',
       }}
       onMouseEnter={(e) => {
         if (!isCurrent) e.currentTarget.style.background = 'var(--bg-hover)'
@@ -51,7 +53,7 @@ export default function TrackItem({ track, index, queue, album }) {
             </span>
             <svg
               className="w-4 h-4 hidden group-hover:block mx-auto"
-              style={{ color: 'var(--text-primary)' }}
+              style={{ color: isCurrent ? 'var(--accent)' : 'var(--text-primary)' }}
               fill="currentColor"
               viewBox="0 0 24 24"
             >
@@ -65,19 +67,43 @@ export default function TrackItem({ track, index, queue, album }) {
         )}
       </div>
 
-      {/* Title */}
+      {/* Title + duration bar */}
       <div className="flex-1 min-w-0">
         <p
-          className="text-[13px] truncate font-medium"
+          className="text-[13px] truncate font-medium mb-1.5"
           style={{ color: isCurrent ? 'var(--accent)' : 'var(--text-primary)' }}
         >
           {track.title}
         </p>
+        {/* Relative duration bar */}
+        <div
+          className="h-[2px] rounded-full overflow-hidden"
+          style={{ background: 'var(--bg-hover)', maxWidth: '180px' }}
+        >
+          <div
+            style={{
+              width: relativeWidth,
+              height: '100%',
+              background: isCurrent ? 'var(--accent)' : 'var(--text-muted)',
+              borderRadius: '9999px',
+              opacity: isCurrent ? 0.8 : 0.4,
+              transition: 'width 400ms ease',
+            }}
+          />
+        </div>
       </div>
 
       {/* Duration */}
       <span
-        className="text-[12px] tabular-nums flex-shrink-0"
+        className="hidden sm:block text-[12px] tabular-nums flex-shrink-0 transition-opacity duration-200"
+        style={{ color: 'var(--text-muted)' }}
+      >
+        {formatDuration(track.duration)}
+      </span>
+
+      {/* Duration on mobile */}
+      <span
+        className="sm:hidden text-[12px] tabular-nums flex-shrink-0"
         style={{ color: 'var(--text-muted)' }}
       >
         {formatDuration(track.duration)}

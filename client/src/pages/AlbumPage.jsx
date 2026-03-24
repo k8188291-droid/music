@@ -55,6 +55,8 @@ export default function AlbumPage() {
   const isThisAlbumPlaying =
     isPlaying && album.tracks.some((t) => t.id === currentTrack?.id)
 
+  const maxDuration = Math.max(...album.tracks.map((t) => t.duration))
+
   function handlePlayAll() {
     if (isThisAlbumPlaying) {
       togglePlay()
@@ -83,34 +85,39 @@ export default function AlbumPage() {
           style={{ background: 'linear-gradient(to bottom, rgba(6,6,10,0.4), var(--bg-base))' }}
         />
 
-        <div className="relative px-8 pt-12 pb-8">
+        <div className="relative px-8 pt-10 pb-8">
           {/* Back button */}
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-[13px] mb-8 transition-colors duration-200 group"
+            className="flex items-center gap-2 mb-8 transition-all duration-200 group"
             style={{ color: 'var(--text-secondary)' }}
           >
-            <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-            </svg>
-            返回
+            <span
+              className="flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-200 group-hover:scale-105"
+              style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)' }}
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </span>
+            <span className="text-[13px] font-medium">返回</span>
           </button>
 
           <div className="flex gap-8 items-end">
-            {/* Album cover */}
+            {/* Album cover — enlarged */}
             <div className="relative flex-shrink-0 animate-scale-in">
               <img
                 src={album.coverImage}
                 alt={album.title}
-                className="w-56 h-56 object-cover rounded-lg"
-                style={{ boxShadow: '0 24px 64px rgba(0,0,0,0.5)' }}
+                className="w-64 h-64 object-cover rounded-xl"
+                style={{ boxShadow: '0 24px 64px rgba(0,0,0,0.6)' }}
               />
               {/* Vinyl disc peeking */}
               <div
-                className="absolute top-4 -right-6 w-48 h-48 rounded-full -z-10"
+                className="absolute top-4 -right-6 w-56 h-56 rounded-full -z-10"
                 style={{
                   background: 'conic-gradient(from 0deg, #111, #1a1a1a, #111, #151515, #111)',
-                  boxShadow: 'inset 0 0 0 20px #0a0a0a, inset 0 0 0 22px #1a1a1a, inset 0 0 0 40px #0d0d0d',
+                  boxShadow: 'inset 0 0 0 22px #0a0a0a, inset 0 0 0 24px #1a1a1a, inset 0 0 0 44px #0d0d0d',
                 }}
               >
                 <div
@@ -134,14 +141,25 @@ export default function AlbumPage() {
               >
                 {album.title}
               </h1>
-              <div className="flex items-center gap-2 text-[13px] flex-wrap">
+              <div className="flex items-center gap-2 text-[13px] flex-wrap mb-4">
                 <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{album.artist}</span>
                 <span style={{ color: 'var(--text-muted)' }}>•</span>
                 <span style={{ color: 'var(--text-secondary)' }}>{album.year}</span>
-                <span style={{ color: 'var(--text-muted)' }}>•</span>
-                <span style={{ color: 'var(--text-secondary)' }}>{album.tracks.length} 首歌曲</span>
-                <span style={{ color: 'var(--text-muted)' }}>•</span>
-                <span style={{ color: 'var(--text-secondary)' }}>{totalDuration(album.tracks)}</span>
+                {album.genre && (
+                  <>
+                    <span style={{ color: 'var(--text-muted)' }}>•</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>{album.genre}</span>
+                  </>
+                )}
+              </div>
+              {/* Stats pill */}
+              <div
+                className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full text-[12px]"
+                style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}
+              >
+                <span>{album.tracks.length} 首歌曲</span>
+                <span style={{ color: 'var(--border)' }}>|</span>
+                <span>{totalDuration(album.tracks)}</span>
               </div>
             </div>
           </div>
@@ -169,11 +187,12 @@ export default function AlbumPage() {
 
       {/* Track list header */}
       <div
-        className="mx-8 mb-1 grid grid-cols-[2.5rem_1fr_3.5rem] gap-4 text-[10px] uppercase tracking-[0.15em] font-semibold pb-3"
+        className="mx-8 mb-1 grid grid-cols-[2.5rem_1fr_auto_3.5rem] gap-4 text-[10px] uppercase tracking-[0.15em] font-semibold pb-3"
         style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}
       >
         <span className="text-center">#</span>
         <span>標題</span>
+        <span className="hidden sm:block">長度</span>
         <span className="text-right">
           <svg className="w-3.5 h-3.5 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="10" />
@@ -191,6 +210,7 @@ export default function AlbumPage() {
             index={i}
             queue={tracksWithMeta}
             album={album}
+            maxDuration={maxDuration}
           />
         ))}
       </div>
