@@ -1,4 +1,5 @@
 import { usePlayer } from '../../hooks/usePlayer'
+import { useRecent } from '../../hooks/useRecent'
 
 function formatDuration(seconds) {
   const m = Math.floor(seconds / 60)
@@ -8,6 +9,7 @@ function formatDuration(seconds) {
 
 export default function TrackItem({ track, index, queue, album, maxDuration }) {
   const { playTrack, currentTrack, isPlaying, togglePlay } = usePlayer()
+  const { addRecent } = useRecent()
   const isCurrent = currentTrack?.id === track.id
   const relativeWidth = maxDuration ? `${(track.duration / maxDuration) * 100}%` : '0%'
 
@@ -20,6 +22,7 @@ export default function TrackItem({ track, index, queue, album, maxDuration }) {
         queue.map((t) => ({ ...t, albumCover: album.coverImage, albumTitle: album.title, albumArtist: album.artist })),
         index,
       )
+      addRecent(album.id)
     }
   }
 

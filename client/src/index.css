@@ -20,26 +20,6 @@
   --player-h: 5.5rem;
 }
 
-/* ── Theme overrides ─────────────────────────────────────────────── */
-[data-theme="cinema"] {
-  --accent: #3ecfcf;
-  --accent-glow: rgba(62, 207, 207, 0.15);
-}
-
-[data-theme="archive"] {
-  --accent: #e85d4a;
-  --accent-glow: rgba(232, 93, 74, 0.15);
-}
-
-/* ── Reset ───────────────────────────────────────────────────────── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
