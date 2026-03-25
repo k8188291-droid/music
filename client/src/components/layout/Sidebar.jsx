@@ -1,4 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom'
+import { usePlaylists } from '../../hooks/usePlaylists'
+import { PlaylistCover } from '../playlist/PlaylistCovers'
 
 const NAV_ITEMS = [
   {
@@ -42,6 +44,7 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   const location = useLocation()
+  const { playlists } = usePlaylists()
 
   return (
     <aside
@@ -78,7 +81,7 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3">
+      <nav className="flex-1 px-3 overflow-y-auto">
         <p
           className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-[0.2em]"
           style={{ color: 'var(--text-muted)' }}
@@ -120,6 +123,50 @@ export default function Sidebar() {
             )
           })}
         </div>
+
+        {/* User playlists in sidebar */}
+        {playlists.length > 0 && (
+          <div className="mt-6">
+            <p
+              className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-[0.2em]"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              我的清單
+            </p>
+            <div className="space-y-0.5">
+              {playlists.map((pl) => {
+                const isActive = location.pathname === `/playlist/${pl.id}`
+                return (
+                  <NavLink
+                    key={pl.id}
+                    to={`/playlist/${pl.id}`}
+                    className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200"
+                    style={{
+                      fontSize: '13px',
+                      color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      background: isActive ? 'var(--bg-hover)' : 'transparent',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) e.currentTarget.style.background = 'transparent'
+                    }}
+                  >
+                    {isActive && (
+                      <div
+                        className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r-full"
+                        style={{ background: pl.color }}
+                      />
+                    )}
+                    <PlaylistCover coverId={pl.coverId} coverUrl={pl.coverUrl} color={pl.color} size={28} />
+                    <span className="truncate">{pl.name}</span>
+                  </NavLink>
+                )
+              })}
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Bottom */}

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { fetchAlbum } from '../api/albumApi'
@@ -6,6 +7,7 @@ import Spinner from '../components/ui/Spinner'
 import { usePlayer } from '../hooks/usePlayer'
 import { useFavorites } from '../hooks/useFavorites'
 import { useRecent } from '../hooks/useRecent'
+import AddToPlaylistMenu from '../components/playlist/AddToPlaylistMenu'
 
 function totalDuration(tracks) {
   const secs = tracks.reduce((sum, t) => sum + t.duration, 0)
@@ -20,6 +22,7 @@ export default function AlbumPage() {
   const { playAlbum, currentTrack, isPlaying, togglePlay } = usePlayer()
   const { toggleFavorite, isFavorite } = useFavorites()
   const { addRecent } = useRecent()
+  const [showPlaylistMenu, setShowPlaylistMenu] = useState(false)
   const loved = isFavorite(id)
 
   const { data: album, isLoading, isError } = useQuery({
@@ -205,6 +208,33 @@ export default function AlbumPage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
           </svg>
         </button>
+
+        {/* Add to playlist button */}
+        <div className="relative">
+          <button
+            onClick={() => setShowPlaylistMenu(!showPlaylistMenu)}
+            className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+            style={{
+              background: 'transparent',
+              border: '1px solid var(--border)',
+              color: 'var(--text-secondary)',
+              cursor: 'pointer',
+            }}
+            title="加入播放清單"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" d="M12 5v14M5 12h14" />
+            </svg>
+          </button>
+          {showPlaylistMenu && (
+            <div className="absolute top-14 left-0">
+              <AddToPlaylistMenu
+                tracks={tracksWithMeta}
+                onClose={() => setShowPlaylistMenu(false)}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Track list header */}

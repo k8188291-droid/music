@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import HomePage from './pages/HomePage'
 import AlbumPage from './pages/AlbumPage'
 import QueuePage from './pages/QueuePage'
+import PlaylistDetailPage from './pages/PlaylistDetailPage'
 import FavoritesPage from './pages/FavoritesPage'
 import RecentPage from './pages/RecentPage'
 import PlayerBar from './components/layout/PlayerBar'
@@ -39,6 +40,7 @@ function AppInner() {
           <Route path="/" element={<HomePage search={search} />} />
           <Route path="/album/:id" element={<AlbumPage />} />
           <Route path="/queue" element={<QueuePage />} />
+          <Route path="/playlist/:id" element={<PlaylistDetailPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/recent" element={<RecentPage />} />
         </Routes>
