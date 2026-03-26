@@ -5,7 +5,14 @@ const BASE = '/api'
 
 // In-memory mock state
 let favoriteIds = albums.slice(0, 5).map((a) => a.id)
-let recentIds = albums.slice(0, 10).map((a) => a.id)
+let recentTracks = albums.slice(0, 10).flatMap((a) =>
+  a.tracks.slice(0, 1).map((t) => ({
+    ...t,
+    albumCover: a.coverImage,
+    albumTitle: a.title,
+    albumArtist: a.artist,
+  }))
+)
 let nextPlId = 100
 let playlists = [
   {
@@ -82,18 +89,18 @@ export const handlers = [
     }
   }),
 
-  // GET /api/recent — list recent album IDs
+  // GET /api/recent — list recent tracks
   http.get(`${BASE}/recent`, async () => {
     await delay(200)
-    return HttpResponse.json(recentIds)
+    return HttpResponse.json(recentTracks)
   }),
 
-  // POST /api/recent — add to recent
+  // POST /api/recent — add track to recent
   http.post(`${BASE}/recent`, async ({ request }) => {
     await delay(150)
-    const { albumId } = await request.json()
-    recentIds = [albumId, ...recentIds.filter((id) => id !== albumId)].slice(0, 50)
-    return HttpResponse.json(recentIds)
+    const { track } = await request.json()
+    recentTracks = [track, ...recentTracks.filter((t) => t.id !== track.id)].slice(0, 50)
+    return HttpResponse.json(recentTracks)
   }),
 
   // ── Playlists ──────────────────────────────────────────────────

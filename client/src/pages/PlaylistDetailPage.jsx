@@ -4,6 +4,7 @@ import { usePlaylists } from '../hooks/usePlaylists'
 import { usePlayer } from '../hooks/usePlayer'
 import { PlaylistCover } from '../components/playlist/PlaylistCovers'
 import PlaylistEditModal from '../components/playlist/PlaylistEditModal'
+import ConfirmDialog from '../components/ui/ConfirmDialog'
 
 function formatDuration(s) {
   const m = Math.floor(s / 60)
@@ -24,6 +25,8 @@ export default function PlaylistDetailPage() {
   const { getPlaylist, updatePlaylist, removeTrack, reorderTracks, deletePlaylist } = usePlaylists()
   const { playTrack, currentTrack, isPlaying, togglePlay, playAlbum } = usePlayer()
   const [showEdit, setShowEdit] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [confirmRemoveTrack, setConfirmRemoveTrack] = useState(null)
   const [dragIndex, setDragIndex] = useState(null)
   const [dragOverIndex, setDragOverIndex] = useState(null)
   const dragRef = useRef(null)
@@ -53,8 +56,23 @@ export default function PlaylistDetailPage() {
   }
 
   function handleDelete() {
+    setConfirmDelete(true)
+  }
+
+  function confirmDeletePlaylist() {
     deletePlaylist(id)
     navigate('/queue')
+  }
+
+  function handleRemoveTrack(trackId) {
+    setConfirmRemoveTrack(trackId)
+  }
+
+  function confirmRemoveTrackAction() {
+    if (confirmRemoveTrack) {
+      removeTrack(id, confirmRemoveTrack)
+      setConfirmRemoveTrack(null)
+    }
   }
 
   function handlePlayAll() {
@@ -361,7 +379,7 @@ export default function PlaylistDetailPage() {
                       </svg>
                     </button>
                     <button
-                      onClick={() => removeTrack(id, track.id)}
+                      onClick={() => handleRemoveTrack(track.id)}
                       className="w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                       style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}
                       title="移除"
@@ -384,6 +402,28 @@ export default function PlaylistDetailPage() {
           playlist={playlist}
           onSave={handleEditSave}
           onClose={() => setShowEdit(false)}
+        />
+      )}
+
+      {/* Confirm delete playlist */}
+      {confirmDelete && (
+        <ConfirmDialog
+          title="刪除播放清單"
+          message={`確定要刪除「${playlist.name}」嗎？此操作無法復原。`}
+          confirmLabel="刪除"
+          onConfirm={confirmDeletePlaylist}
+          onCancel={() => setConfirmDelete(false)}
+        />
+      )}
+
+      {/* Confirm remove track */}
+      {confirmRemoveTrack && (
+        <ConfirmDialog
+          title="移除曲目"
+          message="確定要從播放清單中移除這首歌曲嗎？"
+          confirmLabel="移除"
+          onConfirm={confirmRemoveTrackAction}
+          onCancel={() => setConfirmRemoveTrack(null)}
         />
       )}
     </div>

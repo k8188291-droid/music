@@ -72,7 +72,7 @@ export default function AlbumPage() {
       togglePlay()
     } else {
       playAlbum(tracksWithMeta)
-      addRecent(album.id)
+      addRecent(tracksWithMeta[0])
     }
   }
 

@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { usePlayer } from '../../hooks/usePlayer'
 import { useRecent } from '../../hooks/useRecent'
+import AddToPlaylistMenu from '../playlist/AddToPlaylistMenu'
 
 function formatDuration(seconds) {
   const m = Math.floor(seconds / 60)
@@ -10,8 +12,16 @@ function formatDuration(seconds) {
 export default function TrackItem({ track, index, queue, album, maxDuration }) {
   const { playTrack, currentTrack, isPlaying, togglePlay } = usePlayer()
   const { addRecent } = useRecent()
+  const [showPlaylistMenu, setShowPlaylistMenu] = useState(false)
   const isCurrent = currentTrack?.id === track.id
   const relativeWidth = maxDuration ? `${(track.duration / maxDuration) * 100}%` : '0%'
+
+  const trackWithMeta = {
+    ...track,
+    albumCover: album.coverImage,
+    albumTitle: album.title,
+    albumArtist: album.artist,
+  }
 
   function handlePlay() {
     if (isCurrent) {
@@ -22,13 +32,12 @@ export default function TrackItem({ track, index, queue, album, maxDuration }) {
         queue.map((t) => ({ ...t, albumCover: album.coverImage, albumTitle: album.title, albumArtist: album.artist })),
         index,
       )
-      addRecent(album.id)
+      addRecent(trackWithMeta)
     }
   }
 
   return (
     <div
-      onClick={handlePlay}
       className="group flex items-center gap-4 px-4 py-4 cursor-pointer transition-all duration-200"
       style={{
         background: isCurrent ? 'rgba(var(--accent-rgb, 212,160,83), 0.04)' : 'transparent',
@@ -43,7 +52,7 @@ export default function TrackItem({ track, index, queue, album, maxDuration }) {
       }}
     >
       {/* Number / Play icon */}
-      <div className="w-8 text-center flex-shrink-0">
+      <div className="w-8 text-center flex-shrink-0" onClick={handlePlay}>
         {isCurrent && isPlaying ? (
           <SoundWave />
         ) : (
@@ -71,7 +80,7 @@ export default function TrackItem({ track, index, queue, album, maxDuration }) {
       </div>
 
       {/* Title + duration bar */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0" onClick={handlePlay}>
         <p
           className="text-[13px] truncate font-medium mb-1.5"
           style={{ color: isCurrent ? 'var(--accent)' : 'var(--text-primary)' }}
@@ -96,18 +105,33 @@ export default function TrackItem({ track, index, queue, album, maxDuration }) {
         </div>
       </div>
 
+      {/* Add to playlist */}
+      <div className="relative flex-shrink-0">
+        <button
+          onClick={(e) => { e.stopPropagation(); setShowPlaylistMenu(!showPlaylistMenu) }}
+          className="w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+          title="加入播放清單"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" d="M12 5v14M5 12h14" />
+          </svg>
+        </button>
+        {showPlaylistMenu && (
+          <div className="absolute bottom-full right-0 mb-1" style={{ zIndex: 200 }}>
+            <AddToPlaylistMenu
+              tracks={[trackWithMeta]}
+              onClose={() => setShowPlaylistMenu(false)}
+            />
+          </div>
+        )}
+      </div>
+
       {/* Duration */}
       <span
-        className="hidden sm:block text-[12px] tabular-nums flex-shrink-0 transition-opacity duration-200"
+        className="text-[12px] tabular-nums flex-shrink-0"
         style={{ color: 'var(--text-muted)' }}
-      >
-        {formatDuration(track.duration)}
-      </span>
-
-      {/* Duration on mobile */}
-      <span
-        className="sm:hidden text-[12px] tabular-nums flex-shrink-0"
-        style={{ color: 'var(--text-muted)' }}
+        onClick={handlePlay}
       >
         {formatDuration(track.duration)}
       </span>

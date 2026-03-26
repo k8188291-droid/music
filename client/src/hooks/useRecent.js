@@ -6,12 +6,12 @@ const MAX_RECENT = 50
 export const useRecent = create(
   persist(
     (set) => ({
-      recentIds: [],
+      recentTracks: [],
 
-      addRecent: (albumId) =>
+      addRecent: (track) =>
         set((s) => {
-          const filtered = s.recentIds.filter((id) => id !== albumId)
-          return { recentIds: [albumId, ...filtered].slice(0, MAX_RECENT) }
+          const filtered = s.recentTracks.filter((t) => t.id !== track.id)
+          return { recentTracks: [track, ...filtered].slice(0, MAX_RECENT) }
         }),
     }),
     { name: 'musicbox-recent' }

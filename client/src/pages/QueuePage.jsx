@@ -4,6 +4,7 @@ import { usePlayer } from '../hooks/usePlayer'
 import { usePlaylists } from '../hooks/usePlaylists'
 import { PlaylistCover } from '../components/playlist/PlaylistCovers'
 import PlaylistEditModal from '../components/playlist/PlaylistEditModal'
+import ConfirmDialog from '../components/ui/ConfirmDialog'
 
 function formatDuration(s) {
   const m = Math.floor(s / 60)
@@ -16,6 +17,7 @@ export default function QueuePage() {
   const { playlists, createPlaylist, deletePlaylist } = usePlaylists()
   const [showCreate, setShowCreate] = useState(false)
   const [menuId, setMenuId] = useState(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null)
 
   function handleCreate(data) {
     createPlaylist(data)
@@ -101,7 +103,7 @@ export default function QueuePage() {
                     style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', boxShadow: '0 8px 24px rgba(0,0,0,0.5)', minWidth: 120 }}
                   >
                     <button
-                      onClick={() => { deletePlaylist(pl.id); setMenuId(null) }}
+                      onClick={() => { setConfirmDeleteId(pl.id); setMenuId(null) }}
                       className="w-full flex items-center gap-2 px-3 py-2 text-[12px] transition-colors"
                       style={{ color: '#ef4444', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
                       onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-hover)' }}
@@ -241,6 +243,17 @@ export default function QueuePage() {
       {/* Create modal */}
       {showCreate && (
         <PlaylistEditModal onSave={handleCreate} onClose={() => setShowCreate(false)} />
+      )}
+
+      {/* Confirm delete */}
+      {confirmDeleteId && (
+        <ConfirmDialog
+          title="刪除播放清單"
+          message={`確定要刪除「${playlists.find((p) => p.id === confirmDeleteId)?.name}」嗎？此操作無法復原。`}
+          confirmLabel="刪除"
+          onConfirm={() => { deletePlaylist(confirmDeleteId); setConfirmDeleteId(null) }}
+          onCancel={() => setConfirmDeleteId(null)}
+        />
       )}
     </div>
   )
