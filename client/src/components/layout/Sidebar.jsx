@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { usePlaylists } from '../../hooks/usePlaylists'
 import { PlaylistCover } from '../playlist/PlaylistCovers'
@@ -45,136 +46,176 @@ const NAV_ITEMS = [
 export default function Sidebar() {
   const location = useLocation()
   const { playlists } = usePlaylists()
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  // Close sidebar on navigation (mobile)
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname])
 
   return (
-    <aside
-      className="fixed left-0 top-0 bottom-0 z-30 flex flex-col select-none animate-slide-in-left"
-      style={{
-        width: 'var(--sidebar-w)',
-        background: 'var(--bg-surface)',
-        borderRight: '1px solid var(--border)',
-      }}
-    >
-      {/* Logo */}
-      <div className="px-6 pt-8 pb-8">
-        <div className="flex items-center gap-3">
-          <div className="relative w-9 h-9 flex-shrink-0">
-            <div
-              className="w-full h-full rounded-full"
-              style={{
-                background: 'conic-gradient(from 0deg, #1a1a1a, #333, #1a1a1a, #2a2a2a, #1a1a1a)',
-                boxShadow: 'inset 0 0 0 3px #111, inset 0 0 0 5px #222',
-              }}
-            />
-            <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full"
-              style={{ background: 'var(--accent)' }}
-            />
-          </div>
-          <span
-            className="text-xl tracking-tight"
-            style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: 700 }}
-          >
-            MusicBox
-          </span>
-        </div>
-      </div>
+    <>
+      {/* Mobile hamburger button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="fixed top-3 left-3 z-40 w-9 h-9 rounded-lg items-center justify-center md:hidden"
+        style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-primary)', cursor: 'pointer', display: 'flex' }}
+      >
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 overflow-y-auto">
-        <p
-          className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-[0.2em]"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          瀏覽
-        </p>
-        <div className="space-y-0.5">
-          {NAV_ITEMS.map(({ to, end, label, icon }) => {
-            const isActive = end ? location.pathname === to : location.pathname.startsWith(to)
-            return (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
-                className="relative flex items-center gap-3.5 px-3 py-3.5 rounded-xl font-medium transition-all duration-200"
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 md:hidden"
+          style={{ background: 'rgba(0,0,0,0.6)' }}
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed left-0 top-0 bottom-0 z-50 flex flex-col select-none transition-transform duration-300 ${
+          mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+        style={{
+          width: '15rem',
+          background: 'var(--bg-surface)',
+          borderRight: '1px solid var(--border)',
+        }}
+      >
+        {/* Logo */}
+        <div className="px-6 pt-8 pb-8 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative w-9 h-9 flex-shrink-0">
+              <div
+                className="w-full h-full rounded-full"
                 style={{
-                  fontSize: '14px',
-                  color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  background: isActive ? 'var(--bg-hover)' : 'transparent',
+                  background: 'conic-gradient(from 0deg, #1a1a1a, #333, #1a1a1a, #2a2a2a, #1a1a1a)',
+                  boxShadow: 'inset 0 0 0 3px #111, inset 0 0 0 5px #222',
                 }}
-                onMouseEnter={(e) => {
-                  if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) e.currentTarget.style.background = 'transparent'
-                }}
-              >
-                {isActive && (
-                  <div
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
-                    style={{ background: 'var(--accent)' }}
-                  />
-                )}
-                <span style={{ color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
-                  {icon}
-                </span>
-                {label}
-              </NavLink>
-            )
-          })}
+              />
+              <div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full"
+                style={{ background: 'var(--accent)' }}
+              />
+            </div>
+            <span
+              className="text-xl tracking-tight"
+              style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: 700 }}
+            >
+              MusicBox
+            </span>
+          </div>
+          {/* Mobile close button */}
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="w-7 h-7 rounded-full items-center justify-center md:hidden"
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex' }}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
-        {/* User playlists in sidebar */}
-        {playlists.length > 0 && (
-          <div className="mt-6">
-            <p
-              className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-[0.2em]"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              我的清單
-            </p>
-            <div className="space-y-0.5">
-              {playlists.map((pl) => {
-                const isActive = location.pathname === `/playlist/${pl.id}`
-                return (
-                  <NavLink
-                    key={pl.id}
-                    to={`/playlist/${pl.id}`}
-                    className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200"
-                    style={{
-                      fontSize: '13px',
-                      color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                      background: isActive ? 'var(--bg-hover)' : 'transparent',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) e.currentTarget.style.background = 'transparent'
-                    }}
-                  >
-                    {isActive && (
-                      <div
-                        className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r-full"
-                        style={{ background: pl.color }}
-                      />
-                    )}
-                    <PlaylistCover coverId={pl.coverId} coverUrl={pl.coverUrl} color={pl.color} size={28} />
-                    <span className="truncate">{pl.name}</span>
-                  </NavLink>
-                )
-              })}
-            </div>
+        {/* Navigation */}
+        <nav className="flex-1 px-3 overflow-y-auto">
+          <p
+            className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-[0.2em]"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            瀏覽
+          </p>
+          <div className="space-y-0.5">
+            {NAV_ITEMS.map(({ to, end, label, icon }) => {
+              const isActive = end ? location.pathname === to : location.pathname.startsWith(to)
+              return (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={end}
+                  className="relative flex items-center gap-3.5 px-3 py-3.5 rounded-xl font-medium transition-all duration-200"
+                  style={{
+                    fontSize: '14px',
+                    color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    background: isActive ? 'var(--bg-hover)' : 'transparent',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) e.currentTarget.style.background = 'transparent'
+                  }}
+                >
+                  {isActive && (
+                    <div
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
+                      style={{ background: 'var(--accent)' }}
+                    />
+                  )}
+                  <span style={{ color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
+                    {icon}
+                  </span>
+                  {label}
+                </NavLink>
+              )
+            })}
           </div>
-        )}
-      </nav>
 
-      {/* Bottom */}
-      <div className="px-6 py-6" style={{ borderTop: '1px solid var(--border)' }}>
-        <p className="text-[11px]" style={{ color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
-          Curated with care
-        </p>
-      </div>
-    </aside>
+          {/* User playlists in sidebar */}
+          {playlists.length > 0 && (
+            <div className="mt-6">
+              <p
+                className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-[0.2em]"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                我的清單
+              </p>
+              <div className="space-y-0.5">
+                {playlists.map((pl) => {
+                  const isActive = location.pathname === `/playlist/${pl.id}`
+                  return (
+                    <NavLink
+                      key={pl.id}
+                      to={`/playlist/${pl.id}`}
+                      className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200"
+                      style={{
+                        fontSize: '13px',
+                        color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                        background: isActive ? 'var(--bg-hover)' : 'transparent',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) e.currentTarget.style.background = 'transparent'
+                      }}
+                    >
+                      {isActive && (
+                        <div
+                          className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-r-full"
+                          style={{ background: pl.color }}
+                        />
+                      )}
+                      <PlaylistCover coverId={pl.coverId} coverUrl={pl.coverUrl} color={pl.color} size={28} />
+                      <span className="truncate">{pl.name}</span>
+                    </NavLink>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </nav>
+
+        {/* Bottom */}
+        <div className="px-6 py-6" style={{ borderTop: '1px solid var(--border)' }}>
+          <p className="text-[11px]" style={{ color: 'var(--text-muted)', letterSpacing: '0.05em' }}>
+            Curated with care
+          </p>
+        </div>
+      </aside>
+    </>
   )
 }

@@ -118,7 +118,7 @@ export default function TrackItem({ track, index, queue, album, maxDuration }) {
           </svg>
         </button>
         {showPlaylistMenu && (
-          <div className="absolute bottom-full right-0 mb-1" style={{ zIndex: 200 }}>
+          <div className="fixed z-[200]" style={{ top: 'auto', right: 16, bottom: 'calc(var(--player-h) + 1rem)' }}>
             <AddToPlaylistMenu
               tracks={[trackWithMeta]}
               onClose={() => setShowPlaylistMenu(false)}

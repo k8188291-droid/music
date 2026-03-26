@@ -135,3 +135,12 @@ body::before {
 .vinyl-spin.paused {
   animation-play-state: paused;
 }
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-w: 0px;
+    --header-h: 3.5rem;
+    --player-h: 4rem;
+  }
+}

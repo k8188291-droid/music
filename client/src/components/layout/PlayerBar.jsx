@@ -62,20 +62,20 @@ export default function PlayerBar() {
         onEnded={() => next()}
       />
 
-      <div className="h-full max-w-screen-xl mx-auto flex items-center gap-4 px-5">
+      <div className="h-full max-w-screen-xl mx-auto flex items-center gap-4 px-5 max-md:gap-2 max-md:px-3">
         {/* ── Left: track info with mini vinyl ── */}
-        <div className="flex items-center gap-3.5 w-60 flex-shrink-0 min-w-0">
+        <div className="flex items-center gap-3.5 w-60 flex-shrink-0 min-w-0 max-md:w-auto max-md:gap-2.5 max-md:flex-1">
           <div className="relative flex-shrink-0">
             {/* Cover */}
             <img
               src={currentTrack.albumCover || currentTrack.coverImage}
               alt={currentTrack.title}
-              className="w-12 h-12 rounded-md object-cover"
+              className="w-12 h-12 rounded-md object-cover max-md:w-10 max-md:h-10"
               style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.4)' }}
             />
-            {/* Tiny spinning vinyl behind */}
+            {/* Tiny spinning vinyl behind — hidden on mobile */}
             <div
-              className={`absolute -right-1.5 top-1 w-10 h-10 rounded-full -z-10 ${isPlaying ? 'vinyl-spin' : 'vinyl-spin paused'}`}
+              className={`absolute -right-1.5 top-1 w-10 h-10 rounded-full -z-10 max-md:hidden ${isPlaying ? 'vinyl-spin' : 'vinyl-spin paused'}`}
               style={{
                 background: 'conic-gradient(from 0deg, #111, #1a1a1a, #111, #151515, #111)',
                 boxShadow: 'inset 0 0 0 4px #0a0a0a',
@@ -89,23 +89,23 @@ export default function PlayerBar() {
           </div>
           <div className="min-w-0">
             <p
-              className="text-[13px] font-medium truncate"
+              className="text-[13px] font-medium truncate max-md:text-[12px]"
               style={{ color: 'var(--text-primary)' }}
             >
               {currentTrack.title}
             </p>
-            <p className="text-[11px] truncate" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-[11px] truncate max-md:text-[10px]" style={{ color: 'var(--text-muted)' }}>
               {currentTrack.albumArtist || currentTrack.artist || ''}
             </p>
           </div>
         </div>
 
         {/* ── Center: controls + progress ── */}
-        <div className="flex-1 flex flex-col items-center gap-1.5">
-          <div className="flex items-center gap-5">
+        <div className="flex-1 flex flex-col items-center gap-1.5 max-md:flex-none">
+          <div className="flex items-center gap-5 max-md:gap-3">
             <button
               onClick={toggleShuffle}
-              className="transition-colors duration-200"
+              className="transition-colors duration-200 max-md:hidden"
               style={{ color: shuffleMode ? 'var(--accent)' : 'var(--text-muted)' }}
             >
               <ShuffleIcon />
@@ -119,7 +119,7 @@ export default function PlayerBar() {
             </button>
             <button
               onClick={togglePlay}
-              className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105"
+              className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 max-md:w-8 max-md:h-8"
               style={{ background: 'var(--text-primary)', color: 'var(--bg-base)' }}
             >
               {isPlaying ? <PauseIcon /> : <PlayIcon />}
@@ -133,7 +133,7 @@ export default function PlayerBar() {
             </button>
             <button
               onClick={toggleRepeat}
-              className="relative transition-colors duration-200"
+              className="relative transition-colors duration-200 max-md:hidden"
               style={{ color: repeatMode !== 'none' ? 'var(--accent)' : 'var(--text-muted)' }}
             >
               <RepeatIcon />
@@ -148,8 +148,8 @@ export default function PlayerBar() {
             </button>
           </div>
 
-          {/* Progress bar */}
-          <div className="flex items-center gap-2.5 w-full max-w-md">
+          {/* Progress bar — hidden on mobile */}
+          <div className="flex items-center gap-2.5 w-full max-w-md max-md:hidden">
             <span className="text-[10px] w-8 text-right tabular-nums" style={{ color: 'var(--text-muted)' }}>
               {formatTime(progress)}
             </span>
@@ -179,8 +179,8 @@ export default function PlayerBar() {
           </div>
         </div>
 
-        {/* ── Right: volume ── */}
-        <div className="flex items-center gap-2 w-32 justify-end flex-shrink-0">
+        {/* ── Right: volume — hidden on mobile ── */}
+        <div className="flex items-center gap-2 w-32 justify-end flex-shrink-0 max-md:hidden">
           <VolumeIcon volume={volume} />
           <div
             className="w-20 h-[3px] rounded-full cursor-pointer group relative"
