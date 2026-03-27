@@ -93,7 +93,7 @@ export default function TrackRow({ track, index, queue, startIndex }) {
           </svg>
         </button>
         {showPlaylistMenu && (
-          <div className="fixed z-[200]" style={{ top: 'auto', right: 16, bottom: 'calc(var(--player-h) + 1rem)' }}>
+          <div className="absolute right-0 bottom-full mb-1 z-[200]" style={{ maxHeight: 'calc(100vh - var(--header-h) - var(--player-h) - 2rem)' }}>
             <AddToPlaylistMenu
               tracks={[track]}
               onClose={() => setShowPlaylistMenu(false)}

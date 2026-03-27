@@ -44,7 +44,7 @@ export default function AddToPlaylistMenu({ tracks, onClose }) {
   return (
     <div
       ref={ref}
-      className="absolute z-[100] rounded-xl py-2 animate-fade-in-up"
+      className="rounded-xl py-2 animate-fade-in-up"
       style={{
         background: 'var(--bg-elevated)',
         border: '1px solid var(--border)',
