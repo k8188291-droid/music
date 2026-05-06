@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery } from 'convex/react'
 import { useWindowVirtualizer } from '@tanstack/react-virtual'
-import { fetchAlbums } from '../api/albumApi'
+import { api } from '../../convex/_generated/api'
 import AlbumCard from '../components/album/AlbumCard'
 import AlbumCardSkeleton from '../components/album/AlbumCardSkeleton'
 
@@ -30,10 +30,8 @@ function initialWidth() {
 }
 
 export default function HomePageVinyl({ search = '' }) {
-  const { data: allAlbums, isLoading, isError, refetch } = useQuery({
-    queryKey: ['albums'],
-    queryFn: fetchAlbums,
-  })
+  const allAlbums = useQuery(api.albums.list)
+  const isLoading = allAlbums === undefined
 
   const outerRef      = useRef(null)
   const [containerWidth, setContainerWidth] = useState(initialWidth)
@@ -120,19 +118,6 @@ export default function HomePageVinyl({ search = '' }) {
         </p>
       </div>
 
-      {isError && (
-        <div className="text-center py-24 animate-fade-in">
-          <p className="mb-4" style={{ color: 'var(--text-secondary)' }}>載入失敗</p>
-          <button
-            onClick={() => refetch()}
-            className="px-5 py-2 rounded-full text-sm font-medium"
-            style={{ background: 'var(--accent)', color: '#000' }}
-          >
-            重試
-          </button>
-        </div>
-      )}
-
       {isLoading && (
         <div className="grid gap-[18px]" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
           {Array.from({ length: columns * 3 }).map((_, i) => (
@@ -163,7 +148,7 @@ export default function HomePageVinyl({ search = '' }) {
         </div>
       )}
 
-      {!isLoading && !isError && search && albums.length === 0 && (
+      {!isLoading && search && albums.length === 0 && (
         <div className="flex flex-col items-center justify-center py-24 animate-fade-in">
           <svg className="w-14 h-14 mb-4" style={{ color: 'var(--text-muted)' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
             <circle cx="11" cy="11" r="8" /><path strokeLinecap="round" d="m21 21-4.35-4.35" />

@@ -1,18 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { ConvexProvider, ConvexReactClient } from 'convex/react'
 import './index.css'
 import App from './App.jsx'
 
-async function enableMocking() {
-  if (import.meta.env.PROD) return
-  const { worker } = await import('./mocks/browser')
-  return worker.start({ onUnhandledRequest: 'bypass' })
-}
+const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL)
 
-enableMocking().then(() => {
-  createRoot(document.getElementById('root')).render(
-    <StrictMode>
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <ConvexProvider client={convex}>
       <App />
-    </StrictMode>,
-  )
-})
+    </ConvexProvider>
+  </StrictMode>,
+)

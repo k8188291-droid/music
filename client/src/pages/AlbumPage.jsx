@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import { fetchAlbum } from '../api/albumApi'
+import { useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 import TrackItem from '../components/album/TrackItem'
 import Spinner from '../components/ui/Spinner'
 import { usePlayer } from '../hooks/usePlayer'
@@ -25,12 +25,9 @@ export default function AlbumPage() {
   const [showPlaylistMenu, setShowPlaylistMenu] = useState(false)
   const loved = isFavorite(id)
 
-  const { data: album, isLoading, isError } = useQuery({
-    queryKey: ['album', id],
-    queryFn: () => fetchAlbum(id),
-  })
+  const album = useQuery(api.albums.get, { id })
 
-  if (isLoading) {
+  if (album === undefined) {
     return (
       <div className="flex justify-center items-center" style={{ minHeight: '70vh' }}>
         <Spinner size={48} />
@@ -38,7 +35,7 @@ export default function AlbumPage() {
     )
   }
 
-  if (isError || !album) {
+  if (album === null) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 animate-fade-in" style={{ minHeight: '70vh' }}>
         <p style={{ color: 'var(--text-secondary)' }}>找不到該專輯</p>
@@ -80,7 +77,6 @@ export default function AlbumPage() {
     <div className="pb-12 animate-fade-in">
       {/* Hero header */}
       <div className="relative overflow-hidden">
-        {/* Background blur from cover */}
         <div
           className="absolute inset-0 scale-110 blur-3xl opacity-30"
           style={{
@@ -95,7 +91,6 @@ export default function AlbumPage() {
         />
 
         <div className="relative px-8 pt-10 pb-8">
-          {/* Back button */}
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 mb-8 transition-all duration-200 group"
@@ -113,7 +108,6 @@ export default function AlbumPage() {
           </button>
 
           <div className="flex gap-8 items-end">
-            {/* Album cover — enlarged */}
             <div className="relative flex-shrink-0 animate-scale-in">
               <img
                 src={album.coverImage}
@@ -121,7 +115,6 @@ export default function AlbumPage() {
                 className="w-64 h-64 object-cover rounded-xl"
                 style={{ boxShadow: '0 24px 64px rgba(0,0,0,0.6)' }}
               />
-              {/* Vinyl disc peeking */}
               <div
                 className="absolute top-4 -right-6 w-56 h-56 rounded-full -z-10"
                 style={{
@@ -136,7 +129,6 @@ export default function AlbumPage() {
               </div>
             </div>
 
-            {/* Album info */}
             <div className="animate-fade-in-up" style={{ animationDelay: '150ms' }}>
               <p
                 className="text-[10px] uppercase tracking-[0.25em] font-semibold mb-2"
@@ -161,7 +153,6 @@ export default function AlbumPage() {
                   </>
                 )}
               </div>
-              {/* Stats pill */}
               <div
                 className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full text-[12px]"
                 style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-muted)' }}
@@ -193,7 +184,6 @@ export default function AlbumPage() {
           )}
         </button>
 
-        {/* Favorite button */}
         <button
           onClick={() => toggleFavorite(id)}
           className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
@@ -209,7 +199,6 @@ export default function AlbumPage() {
           </svg>
         </button>
 
-        {/* Add to playlist button */}
         <div className="relative">
           <button
             onClick={() => setShowPlaylistMenu(!showPlaylistMenu)}
@@ -253,7 +242,6 @@ export default function AlbumPage() {
         </span>
       </div>
 
-      {/* Tracks */}
       <div className="mx-4">
         {album.tracks.map((track, i) => (
           <TrackItem

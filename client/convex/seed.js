@@ -1,0 +1,178 @@
+import { mutation } from './_generated/server'
+
+const ALBUMS = [
+  {
+    title: 'After Hours', artist: 'The Weeknd', year: 2020, genre: 'R&B',
+    coverImageUrl: '/images/after-hours.jpg', color: '#8B0000',
+    tracks: [
+      { trackNumber: 1, title: 'Alone Again', duration: 281 },
+      { trackNumber: 2, title: 'Too Late', duration: 234 },
+      { trackNumber: 3, title: 'Hardest to Love', duration: 219 },
+      { trackNumber: 4, title: 'Scared to Live', duration: 200 },
+      { trackNumber: 5, title: 'Snowchild', duration: 269 },
+      { trackNumber: 6, title: 'Escape from LA', duration: 366 },
+      { trackNumber: 7, title: 'Heartless', duration: 218 },
+      { trackNumber: 8, title: 'Faith', duration: 399 },
+      { trackNumber: 9, title: 'Blinding Lights', duration: 200 },
+      { trackNumber: 10, title: 'In Your Eyes', duration: 237 },
+      { trackNumber: 11, title: 'Save Your Tears', duration: 215 },
+      { trackNumber: 12, title: 'Repeat After Me (Interlude)', duration: 200 },
+      { trackNumber: 13, title: 'After Hours', duration: 361 },
+      { trackNumber: 14, title: 'Until I Bleed Out', duration: 257 },
+    ],
+  },
+  {
+    title: 'DAMN.', artist: 'Kendrick Lamar', year: 2017, genre: 'Hip-Hop',
+    coverImageUrl: '/images/damn.jpg', color: '#8B0000',
+    tracks: [
+      { trackNumber: 1, title: 'BLOOD.', duration: 117 },
+      { trackNumber: 2, title: 'DNA.', duration: 185 },
+      { trackNumber: 3, title: 'YAH.', duration: 175 },
+      { trackNumber: 4, title: 'ELEMENT.', duration: 213 },
+      { trackNumber: 5, title: 'FEEL.', duration: 212 },
+      { trackNumber: 6, title: 'LOYALTY.', duration: 228 },
+      { trackNumber: 7, title: 'PRIDE.', duration: 271 },
+      { trackNumber: 8, title: 'HUMBLE.', duration: 177 },
+      { trackNumber: 9, title: 'LUST.', duration: 305 },
+      { trackNumber: 10, title: 'LOVE.', duration: 213 },
+      { trackNumber: 11, title: 'XXX.', duration: 264 },
+      { trackNumber: 12, title: 'FEAR.', duration: 428 },
+      { trackNumber: 13, title: 'GOD.', duration: 212 },
+      { trackNumber: 14, title: 'DUCKWORTH.', duration: 274 },
+    ],
+  },
+  {
+    title: 'Currents', artist: 'Tame Impala', year: 2015, genre: 'Psychedelic Pop',
+    coverImageUrl: '/images/currents.jpg', color: '#1a3a5c',
+    tracks: [
+      { trackNumber: 1, title: 'Let It Happen', duration: 467 },
+      { trackNumber: 2, title: 'Nangs', duration: 114 },
+      { trackNumber: 3, title: 'The Moment', duration: 279 },
+      { trackNumber: 4, title: "Yes I'm Changing", duration: 299 },
+      { trackNumber: 5, title: 'Eventually', duration: 311 },
+      { trackNumber: 6, title: 'Gossip', duration: 60 },
+      { trackNumber: 7, title: 'The Less I Know the Better', duration: 216 },
+      { trackNumber: 8, title: 'Past Life', duration: 195 },
+      { trackNumber: 9, title: 'Disciples', duration: 105 },
+      { trackNumber: 10, title: 'New Person, Same Old Mistakes', duration: 389 },
+      { trackNumber: 11, title: 'Love/Paranoia', duration: 194 },
+      { trackNumber: 12, title: 'Reality in Motion', duration: 254 },
+      { trackNumber: 13, title: "'Cause I'm a Man", duration: 231 },
+    ],
+  },
+  {
+    title: '÷ (Divide)', artist: 'Ed Sheeran', year: 2017, genre: 'Pop',
+    coverImageUrl: '/images/divide.jpg', color: '#2d5a27',
+    tracks: [
+      { trackNumber: 1, title: 'Eraser', duration: 227 },
+      { trackNumber: 2, title: 'Castle on the Hill', duration: 261 },
+      { trackNumber: 3, title: 'Dive', duration: 238 },
+      { trackNumber: 4, title: 'Shape of You', duration: 234 },
+      { trackNumber: 5, title: 'Perfect', duration: 263 },
+      { trackNumber: 6, title: 'Galway Girl', duration: 170 },
+      { trackNumber: 7, title: 'Happier', duration: 207 },
+      { trackNumber: 8, title: 'New Man', duration: 213 },
+      { trackNumber: 9, title: "Hearts Don't Break Around Here", duration: 264 },
+      { trackNumber: 10, title: 'What Do I Know?', duration: 222 },
+      { trackNumber: 11, title: 'How Would You Feel (Paean)', duration: 290 },
+      { trackNumber: 12, title: 'Supermarket Flowers', duration: 230 },
+    ],
+  },
+  {
+    title: 'Random Access Memories', artist: 'Daft Punk', year: 2013, genre: 'Electronic',
+    coverImageUrl: '/images/ram.jpg', color: '#c8952a',
+    tracks: [
+      { trackNumber: 1, title: 'Give Life Back to Music', duration: 274 },
+      { trackNumber: 2, title: 'The Game of Love', duration: 228 },
+      { trackNumber: 3, title: 'Giorgio by Moroder', duration: 544 },
+      { trackNumber: 4, title: 'Within', duration: 228 },
+      { trackNumber: 5, title: 'Instant Crush', duration: 337 },
+      { trackNumber: 6, title: 'Lose Yourself to Dance', duration: 353 },
+      { trackNumber: 7, title: 'Touch', duration: 498 },
+      { trackNumber: 8, title: 'Get Lucky', duration: 369 },
+      { trackNumber: 9, title: 'Beyond', duration: 279 },
+      { trackNumber: 10, title: 'Motherboard', duration: 348 },
+      { trackNumber: 11, title: 'Fragments of Time', duration: 277 },
+      { trackNumber: 12, title: "Doin' It Right", duration: 257 },
+      { trackNumber: 13, title: 'Contact', duration: 400 },
+    ],
+  },
+  {
+    title: 'Rumours', artist: 'Fleetwood Mac', year: 1977, genre: 'Soft Rock',
+    coverImageUrl: '/images/rumours.jpg', color: '#4a3728',
+    tracks: [
+      { trackNumber: 1, title: 'Second Hand News', duration: 163 },
+      { trackNumber: 2, title: 'Dreams', duration: 254 },
+      { trackNumber: 3, title: 'Never Going Back Again', duration: 134 },
+      { trackNumber: 4, title: "Don't Stop", duration: 196 },
+      { trackNumber: 5, title: 'Go Your Own Way', duration: 217 },
+      { trackNumber: 6, title: 'Songbird', duration: 201 },
+      { trackNumber: 7, title: 'The Chain', duration: 270 },
+      { trackNumber: 8, title: 'You Make Loving Fun', duration: 209 },
+      { trackNumber: 9, title: "I Don't Want to Know", duration: 193 },
+      { trackNumber: 10, title: 'Oh Daddy', duration: 237 },
+      { trackNumber: 11, title: 'Gold Dust Woman', duration: 298 },
+    ],
+  },
+  {
+    title: 'Blonde', artist: 'Frank Ocean', year: 2016, genre: 'R&B',
+    coverImageUrl: '/images/blonde.jpg', color: '#d4a843',
+    tracks: [
+      { trackNumber: 1, title: 'Nikes', duration: 311 },
+      { trackNumber: 2, title: 'Ivy', duration: 281 },
+      { trackNumber: 3, title: 'Pink + White', duration: 215 },
+      { trackNumber: 4, title: 'Be Yourself', duration: 105 },
+      { trackNumber: 5, title: 'Solo', duration: 261 },
+      { trackNumber: 6, title: 'Skyline To', duration: 223 },
+      { trackNumber: 7, title: 'Self Control', duration: 249 },
+      { trackNumber: 8, title: 'Good Guy', duration: 93 },
+      { trackNumber: 9, title: 'Nights', duration: 306 },
+      { trackNumber: 10, title: 'Solo (Reprise)', duration: 91 },
+      { trackNumber: 11, title: 'Pretty Sweet', duration: 175 },
+      { trackNumber: 12, title: 'Facebook Story', duration: 87 },
+      { trackNumber: 13, title: 'Close to You', duration: 67 },
+      { trackNumber: 14, title: 'White Ferrari', duration: 233 },
+      { trackNumber: 15, title: 'Seigfried', duration: 350 },
+      { trackNumber: 16, title: 'Godspeed', duration: 186 },
+      { trackNumber: 17, title: 'Futura Free', duration: 557 },
+    ],
+  },
+  {
+    title: 'folklore', artist: 'Taylor Swift', year: 2020, genre: 'Indie Folk',
+    coverImageUrl: '/images/folklore.jpg', color: '#808080',
+    tracks: [
+      { trackNumber: 1, title: 'the 1', duration: 210 },
+      { trackNumber: 2, title: 'cardigan', duration: 239 },
+      { trackNumber: 3, title: 'the last great american dynasty', duration: 231 },
+      { trackNumber: 4, title: 'exile', duration: 285 },
+      { trackNumber: 5, title: 'my tears ricochet', duration: 255 },
+      { trackNumber: 6, title: 'mirrorball', duration: 211 },
+      { trackNumber: 7, title: 'seven', duration: 212 },
+      { trackNumber: 8, title: 'august', duration: 260 },
+      { trackNumber: 9, title: 'this is me trying', duration: 201 },
+      { trackNumber: 10, title: 'illicit affairs', duration: 188 },
+      { trackNumber: 11, title: 'invisible string', duration: 253 },
+      { trackNumber: 12, title: 'mad woman', duration: 218 },
+      { trackNumber: 13, title: 'epiphany', duration: 261 },
+      { trackNumber: 14, title: 'betty', duration: 294 },
+      { trackNumber: 15, title: 'peace', duration: 233 },
+      { trackNumber: 16, title: 'hoax', duration: 214 },
+    ],
+  },
+]
+
+export const seedAlbums = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const existing = await ctx.db.query('albums').collect()
+    if (existing.length > 0) return { message: 'Already seeded', count: existing.length }
+
+    for (const { tracks, ...albumData } of ALBUMS) {
+      const albumId = await ctx.db.insert('albums', albumData)
+      for (const track of tracks) {
+        await ctx.db.insert('tracks', { albumId, ...track })
+      }
+    }
+    return { message: 'Seeded successfully', count: ALBUMS.length }
+  },
+})

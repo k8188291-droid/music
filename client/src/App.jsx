@@ -1,24 +1,15 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import HomePage from './pages/HomePage'
 import AlbumPage from './pages/AlbumPage'
 import QueuePage from './pages/QueuePage'
 import PlaylistDetailPage from './pages/PlaylistDetailPage'
 import FavoritesPage from './pages/FavoritesPage'
 import RecentPage from './pages/RecentPage'
+import UploadPage from './pages/UploadPage'
 import PlayerBar from './components/layout/PlayerBar'
 import Sidebar from './components/layout/Sidebar'
 import SearchBar from './components/layout/SearchBar'
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 1000 * 60 * 5,
-    },
-  },
-})
 
 function AppInner() {
   const [search, setSearch] = useState('')
@@ -43,6 +34,7 @@ function AppInner() {
           <Route path="/playlist/:id" element={<PlaylistDetailPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/recent" element={<RecentPage />} />
+          <Route path="/upload" element={<UploadPage />} />
         </Routes>
       </main>
 
@@ -53,10 +45,8 @@ function AppInner() {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AppInner />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <AppInner />
+    </BrowserRouter>
   )
 }

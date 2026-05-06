@@ -41,6 +41,15 @@ const NAV_ITEMS = [
       </svg>
     ),
   },
+  {
+    to: '/upload',
+    label: '新增專輯',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-5 h-5 flex-shrink-0">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+      </svg>
+    ),
+  },
 ]
 
 export default function Sidebar() {

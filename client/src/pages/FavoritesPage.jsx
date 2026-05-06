@@ -1,15 +1,13 @@
-import { useQuery } from '@tanstack/react-query'
-import { fetchAlbums } from '../api/albumApi'
+import { useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 import { useFavorites } from '../hooks/useFavorites'
 import AlbumCard from '../components/album/AlbumCard'
 import Spinner from '../components/ui/Spinner'
 
 export default function FavoritesPage() {
   const { favoriteIds } = useFavorites()
-  const { data: albums, isLoading } = useQuery({
-    queryKey: ['albums'],
-    queryFn: fetchAlbums,
-  })
+  const albums = useQuery(api.albums.list)
+  const isLoading = albums === undefined
 
   if (isLoading) {
     return (
@@ -54,9 +52,7 @@ export default function FavoritesPage() {
 
       <div
         className="grid gap-5"
-        style={{
-          gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-        }}
+        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}
       >
         {favoriteAlbums.map((album) => (
           <AlbumCard key={album.id} album={album} />
