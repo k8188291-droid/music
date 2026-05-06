@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "start": "bash start-convex.sh",
     "dev": "npm run dev --prefix client",
     "dev:convex": "cd client && npx convex dev",
-    "dev:full": "cd client && npx convex dev --start 'npx vite'",
-    "seed": "cd client && npx convex run seed:seedAlbums"
+    "dev:full": "cd client && npx convex dev --start 'npx vite'"
+  },
+  "devDependencies": {
+    "@noble/ciphers": "^2.2.0"
   }
 }
