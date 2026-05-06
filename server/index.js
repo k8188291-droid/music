@@ -4,6 +4,9 @@ import cors from 'cors'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import albumsRouter from './routes/albums.js'
+import favoritesRouter from './routes/favorites.js'
+import recentRouter from './routes/recent.js'
+import playlistsRouter from './routes/playlists.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const PORT = process.env.PORT || 3001
@@ -20,6 +23,9 @@ app.use('/audio', express.static(join(__dirname, 'public/audio')))
 
 // API routes
 app.use('/api/albums', albumsRouter)
+app.use('/api/favorites', favoritesRouter)
+app.use('/api/recent', recentRouter)
+app.use('/api/playlists', playlistsRouter)
 
 // 404 fallback
 app.use((_req, res) => res.status(404).json({ message: 'Not found' }))

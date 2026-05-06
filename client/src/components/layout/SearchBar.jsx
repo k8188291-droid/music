@@ -16,7 +16,7 @@ export default function SearchBar({ value, onChange }) {
 
   return (
     <header
-      className="fixed top-0 right-0 z-20 flex items-center px-6"
+      className="fixed top-0 right-0 z-20 flex items-center px-6 max-md:pl-14"
       style={{
         left: 'var(--sidebar-w)',
         height: 'var(--header-h)',
@@ -69,7 +69,7 @@ export default function SearchBar({ value, onChange }) {
           </button>
         ) : (
           <kbd
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] px-1.5 py-0.5 rounded font-medium pointer-events-none"
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[10px] px-1.5 py-0.5 rounded font-medium pointer-events-none hidden sm:inline"
             style={{
               color: 'var(--text-muted)',
               background: 'var(--bg-hover)',

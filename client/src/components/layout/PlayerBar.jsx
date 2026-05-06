@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { usePlayer } from '../../hooks/usePlayer'
 
 function formatTime(s) {
@@ -18,6 +18,7 @@ export default function PlayerBar() {
 
   const audioRef = useRef(null)
   const currentTrack = queue[currentIndex] ?? null
+  const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
     const audio = audioRef.current
@@ -46,15 +47,7 @@ export default function PlayerBar() {
   const pct = duration ? (progress / duration) * 100 : 0
 
   return (
-    <div
-      className="fixed bottom-0 left-0 right-0 z-50"
-      style={{
-        height: 'var(--player-h)',
-        background: 'rgba(10, 10, 14, 0.85)',
-        backdropFilter: 'blur(32px) saturate(1.5)',
-        borderTop: '1px solid var(--border)',
-      }}
-    >
+    <>
       <audio
         ref={audioRef}
         onTimeUpdate={(e) => setProgress(e.target.currentTime)}
@@ -62,100 +55,52 @@ export default function PlayerBar() {
         onEnded={() => next()}
       />
 
-      <div className="h-full max-w-screen-xl mx-auto flex items-center gap-4 px-5">
-        {/* ── Left: track info with mini vinyl ── */}
-        <div className="flex items-center gap-3.5 w-60 flex-shrink-0 min-w-0">
-          <div className="relative flex-shrink-0">
-            {/* Cover */}
-            <img
-              src={currentTrack.albumCover || currentTrack.coverImage}
-              alt={currentTrack.title}
-              className="w-12 h-12 rounded-md object-cover"
-              style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.4)' }}
-            />
-            {/* Tiny spinning vinyl behind */}
-            <div
-              className={`absolute -right-1.5 top-1 w-10 h-10 rounded-full -z-10 ${isPlaying ? 'vinyl-spin' : 'vinyl-spin paused'}`}
-              style={{
-                background: 'conic-gradient(from 0deg, #111, #1a1a1a, #111, #151515, #111)',
-                boxShadow: 'inset 0 0 0 4px #0a0a0a',
-              }}
-            >
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
-                style={{ background: 'var(--accent)' }}
-              />
-            </div>
-          </div>
-          <div className="min-w-0">
-            <p
-              className="text-[13px] font-medium truncate"
-              style={{ color: 'var(--text-primary)' }}
-            >
-              {currentTrack.title}
-            </p>
-            <p className="text-[11px] truncate" style={{ color: 'var(--text-muted)' }}>
-              {currentTrack.albumArtist || currentTrack.artist || ''}
-            </p>
-          </div>
-        </div>
+      {/* ── Expanded fullscreen player (mobile) ── */}
+      {expanded && (
+        <div
+          className="fixed inset-0 z-[60] flex flex-col items-center justify-center px-8 py-10"
+          style={{
+            background: 'var(--bg-base)',
+          }}
+        >
+          {/* Close / collapse button */}
+          <button
+            onClick={() => setExpanded(false)}
+            className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center"
+            style={{ background: 'var(--bg-hover)', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
 
-        {/* ── Center: controls + progress ── */}
-        <div className="flex-1 flex flex-col items-center gap-1.5">
-          <div className="flex items-center gap-5">
-            <button
-              onClick={toggleShuffle}
-              className="transition-colors duration-200"
-              style={{ color: shuffleMode ? 'var(--accent)' : 'var(--text-muted)' }}
-            >
-              <ShuffleIcon />
-            </button>
-            <button
-              onClick={prev}
-              className="transition-colors duration-200 hover:brightness-150"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              <SkipPrevIcon />
-            </button>
-            <button
-              onClick={togglePlay}
-              className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105"
-              style={{ background: 'var(--text-primary)', color: 'var(--bg-base)' }}
-            >
-              {isPlaying ? <PauseIcon /> : <PlayIcon />}
-            </button>
-            <button
-              onClick={next}
-              className="transition-colors duration-200 hover:brightness-150"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              <SkipNextIcon />
-            </button>
-            <button
-              onClick={toggleRepeat}
-              className="relative transition-colors duration-200"
-              style={{ color: repeatMode !== 'none' ? 'var(--accent)' : 'var(--text-muted)' }}
-            >
-              <RepeatIcon />
-              {repeatMode === 'one' && (
-                <span
-                  className="absolute -top-1 -right-1.5 text-[8px] font-bold"
-                  style={{ color: 'var(--accent)' }}
-                >
-                  1
-                </span>
-              )}
-            </button>
-          </div>
+          {/* Cover art */}
+          <img
+            src={currentTrack.albumCover || currentTrack.coverImage}
+            alt={currentTrack.title}
+            className="w-64 h-64 rounded-2xl object-cover mb-8"
+            style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.6)' }}
+          />
+
+          {/* Track info */}
+          <p
+            className="text-xl font-bold text-center mb-1 max-w-full truncate"
+            style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}
+          >
+            {currentTrack.title}
+          </p>
+          <p className="text-sm text-center mb-8" style={{ color: 'var(--text-secondary)' }}>
+            {currentTrack.albumArtist || currentTrack.artist || ''}
+          </p>
 
           {/* Progress bar */}
-          <div className="flex items-center gap-2.5 w-full max-w-md">
-            <span className="text-[10px] w-8 text-right tabular-nums" style={{ color: 'var(--text-muted)' }}>
+          <div className="flex items-center gap-3 w-full max-w-sm mb-8">
+            <span className="text-[11px] w-9 text-right tabular-nums" style={{ color: 'var(--text-muted)' }}>
               {formatTime(progress)}
             </span>
             <div
-              className="flex-1 h-[3px] rounded-full cursor-pointer group relative"
-              style={{ background: 'rgba(255,255,255,0.08)' }}
+              className="flex-1 h-[4px] rounded-full cursor-pointer relative"
+              style={{ background: 'rgba(255,255,255,0.1)' }}
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect()
                 const t = ((e.clientX - rect.left) / rect.width) * duration
@@ -164,42 +109,241 @@ export default function PlayerBar() {
               }}
             >
               <div
-                className="h-full rounded-full transition-colors relative"
-                style={{ width: `${pct}%`, background: 'var(--text-primary)' }}
+                className="h-full rounded-full relative"
+                style={{ width: `${pct}%`, background: 'var(--accent)' }}
               >
                 <div
-                  className="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ background: 'var(--text-primary)', boxShadow: '0 0 6px rgba(240,236,228,0.3)' }}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full"
+                  style={{ background: 'var(--accent)', boxShadow: '0 0 8px rgba(212,160,83,0.4)' }}
                 />
               </div>
             </div>
-            <span className="text-[10px] w-8 tabular-nums" style={{ color: 'var(--text-muted)' }}>
+            <span className="text-[11px] w-9 tabular-nums" style={{ color: 'var(--text-muted)' }}>
               {formatTime(duration)}
             </span>
           </div>
-        </div>
 
-        {/* ── Right: volume ── */}
-        <div className="flex items-center gap-2 w-32 justify-end flex-shrink-0">
-          <VolumeIcon volume={volume} />
+          {/* Controls */}
+          <div className="flex items-center gap-8 mb-8">
+            <button
+              onClick={toggleShuffle}
+              className="transition-colors duration-200"
+              style={{ color: shuffleMode ? 'var(--accent)' : 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              <ShuffleIcon />
+            </button>
+            <button
+              onClick={prev}
+              className="transition-colors duration-200"
+              style={{ color: 'var(--text-secondary)', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              <SkipPrevIcon />
+            </button>
+            <button
+              onClick={togglePlay}
+              className="w-14 h-14 rounded-full flex items-center justify-center"
+              style={{ background: 'var(--text-primary)', color: 'var(--bg-base)', border: 'none', cursor: 'pointer' }}
+            >
+              {isPlaying ? <PauseIconLg /> : <PlayIconLg />}
+            </button>
+            <button
+              onClick={next}
+              className="transition-colors duration-200"
+              style={{ color: 'var(--text-secondary)', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              <SkipNextIcon />
+            </button>
+            <button
+              onClick={toggleRepeat}
+              className="relative transition-colors duration-200"
+              style={{ color: repeatMode !== 'none' ? 'var(--accent)' : 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              <RepeatIcon />
+              {repeatMode === 'one' && (
+                <span className="absolute -top-1 -right-1.5 text-[8px] font-bold" style={{ color: 'var(--accent)' }}>1</span>
+              )}
+            </button>
+          </div>
+
+          {/* Volume */}
+          <div className="flex items-center gap-3 w-full max-w-[200px]">
+            <VolumeIcon volume={volume} />
+            <div
+              className="flex-1 h-[3px] rounded-full cursor-pointer relative"
+              style={{ background: 'rgba(255,255,255,0.08)' }}
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const v = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
+                setVolume(v)
+                if (audioRef.current) audioRef.current.volume = v
+              }}
+            >
+              <div
+                className="h-full rounded-full transition-colors"
+                style={{ width: `${volume * 100}%`, background: 'var(--text-primary)' }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Mini bar (always visible at bottom) ── */}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-50"
+        style={{
+          height: 'var(--player-h)',
+          background: 'rgba(10, 10, 14, 0.85)',
+          backdropFilter: 'blur(32px) saturate(1.5)',
+          borderTop: '1px solid var(--border)',
+        }}
+      >
+        <div className="h-full max-w-screen-xl mx-auto flex items-center gap-4 px-5 max-md:gap-2 max-md:px-3">
+          {/* ── Left: track info with mini vinyl ── */}
           <div
-            className="w-20 h-[3px] rounded-full cursor-pointer group relative"
-            style={{ background: 'rgba(255,255,255,0.08)' }}
-            onClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect()
-              const v = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
-              setVolume(v)
-              if (audioRef.current) audioRef.current.volume = v
+            className="flex items-center gap-3.5 w-60 flex-shrink-0 min-w-0 max-md:w-auto max-md:gap-2.5 max-md:flex-1 max-md:cursor-pointer"
+            onClick={() => {
+              if (window.innerWidth < 768) setExpanded(true)
             }}
           >
+            <div className="relative flex-shrink-0">
+              <img
+                src={currentTrack.albumCover || currentTrack.coverImage}
+                alt={currentTrack.title}
+                className="w-12 h-12 rounded-md object-cover max-md:w-10 max-md:h-10"
+                style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.4)' }}
+              />
+              {/* Tiny spinning vinyl behind — hidden on mobile */}
+              <div
+                className={`absolute -right-1.5 top-1 w-10 h-10 rounded-full -z-10 max-md:hidden ${isPlaying ? 'vinyl-spin' : 'vinyl-spin paused'}`}
+                style={{
+                  background: 'conic-gradient(from 0deg, #111, #1a1a1a, #111, #151515, #111)',
+                  boxShadow: 'inset 0 0 0 4px #0a0a0a',
+                }}
+              >
+                <div
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full"
+                  style={{ background: 'var(--accent)' }}
+                />
+              </div>
+            </div>
+            <div className="min-w-0">
+              <p
+                className="text-[13px] font-medium truncate max-md:text-[12px]"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                {currentTrack.title}
+              </p>
+              <p className="text-[11px] truncate max-md:text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                {currentTrack.albumArtist || currentTrack.artist || ''}
+              </p>
+            </div>
+            {/* Expand chevron on mobile */}
+            <svg className="w-4 h-4 flex-shrink-0 hidden max-md:block" style={{ color: 'var(--text-muted)' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" d="M5 15l7-7 7 7" />
+            </svg>
+          </div>
+
+          {/* ── Center: controls + progress ── */}
+          <div className="flex-1 flex flex-col items-center gap-1.5 max-md:flex-none">
+            <div className="flex items-center gap-5 max-md:gap-3">
+              <button
+                onClick={toggleShuffle}
+                className="transition-colors duration-200 max-md:hidden"
+                style={{ color: shuffleMode ? 'var(--accent)' : 'var(--text-muted)' }}
+              >
+                <ShuffleIcon />
+              </button>
+              <button
+                onClick={prev}
+                className="transition-colors duration-200 hover:brightness-150"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                <SkipPrevIcon />
+              </button>
+              <button
+                onClick={togglePlay}
+                className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105 max-md:w-8 max-md:h-8"
+                style={{ background: 'var(--text-primary)', color: 'var(--bg-base)' }}
+              >
+                {isPlaying ? <PauseIcon /> : <PlayIcon />}
+              </button>
+              <button
+                onClick={next}
+                className="transition-colors duration-200 hover:brightness-150"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                <SkipNextIcon />
+              </button>
+              <button
+                onClick={toggleRepeat}
+                className="relative transition-colors duration-200 max-md:hidden"
+                style={{ color: repeatMode !== 'none' ? 'var(--accent)' : 'var(--text-muted)' }}
+              >
+                <RepeatIcon />
+                {repeatMode === 'one' && (
+                  <span
+                    className="absolute -top-1 -right-1.5 text-[8px] font-bold"
+                    style={{ color: 'var(--accent)' }}
+                  >
+                    1
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {/* Progress bar — hidden on mobile */}
+            <div className="flex items-center gap-2.5 w-full max-w-md max-md:hidden">
+              <span className="text-[10px] w-8 text-right tabular-nums" style={{ color: 'var(--text-muted)' }}>
+                {formatTime(progress)}
+              </span>
+              <div
+                className="flex-1 h-[3px] rounded-full cursor-pointer group relative"
+                style={{ background: 'rgba(255,255,255,0.08)' }}
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect()
+                  const t = ((e.clientX - rect.left) / rect.width) * duration
+                  seek(t)
+                  if (audioRef.current) audioRef.current.currentTime = t
+                }}
+              >
+                <div
+                  className="h-full rounded-full transition-colors relative"
+                  style={{ width: `${pct}%`, background: 'var(--text-primary)' }}
+                >
+                  <div
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{ background: 'var(--text-primary)', boxShadow: '0 0 6px rgba(240,236,228,0.3)' }}
+                  />
+                </div>
+              </div>
+              <span className="text-[10px] w-8 tabular-nums" style={{ color: 'var(--text-muted)' }}>
+                {formatTime(duration)}
+              </span>
+            </div>
+          </div>
+
+          {/* ── Right: volume — hidden on mobile ── */}
+          <div className="flex items-center gap-2 w-32 justify-end flex-shrink-0 max-md:hidden">
+            <VolumeIcon volume={volume} />
             <div
-              className="h-full rounded-full transition-colors"
-              style={{ width: `${volume * 100}%`, background: 'var(--text-primary)' }}
-            />
+              className="w-20 h-[3px] rounded-full cursor-pointer group relative"
+              style={{ background: 'rgba(255,255,255,0.08)' }}
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const v = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
+                setVolume(v)
+                if (audioRef.current) audioRef.current.volume = v
+              }}
+            >
+              <div
+                className="h-full rounded-full transition-colors"
+                style={{ width: `${volume * 100}%`, background: 'var(--text-primary)' }}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
@@ -211,6 +355,16 @@ const PlayIcon = () => (
 )
 const PauseIcon = () => (
   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+  </svg>
+)
+const PlayIconLg = () => (
+  <svg className="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M8 5v14l11-7z" />
+  </svg>
+)
+const PauseIconLg = () => (
+  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
   </svg>
 )
